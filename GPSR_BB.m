@@ -442,8 +442,8 @@ while keep_continuation
             mses(1) = (x(:)-true(:))'*(x(:)-true(:));
         end
         if verbose
-            fprintf(1,'Initial obj=%10.6e, alpha=%6.2e, nonzeros=%7d\n',...
-                f,alpha,num_nz_x);
+            fprintf(1,'Initial obj=%10.6e, alpha=%6.2e, nonzeros=%7d MSE=%7d\n',...
+                f,alpha,num_nz_x, mses);
         end
     end
 
@@ -522,8 +522,8 @@ while keep_continuation
       
       % print out stuff
       if verbose
-         fprintf(1,'It=%4d, obj=%9.5e, alpha=%6.2e, nz=%8d, MSE=%6.2e, ',...
-             iter, f, alpha, num_nz_x, mses(iter));
+         fprintf(1,'It=%4d, obj=%9.5e, lambda=%6.2e, alpha=%6.2e, nz=%8d, MSE=%6.2e, ',...
+             iter, f, lambda, alpha, num_nz_x, mses(iter));
       end
 
       % update iteration counts, store results and times

@@ -9,6 +9,13 @@ for i = 1:8
 end
 w1 = [wa, wh; wv, wd];
 % figure;imagesc(w1(:,:,1))
+% for i = 1:480 
+% for j = 1:640 
+% tt(i,j) = (w1(i,j,1)~=0);
+% end
+% end
+% figure;imagesc(tt(:,:,1))
+
 
 
 for i = 1:8

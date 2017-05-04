@@ -12,6 +12,29 @@ for i = 1:8
 end
 y = sum(skewed_cube, 3);
 
+for i = 1:8
+    coded(:,:,i) = mask;
+end
+figure;imagesc(coded(:,:,1))
+
+for i = 1:8
+    skewed_cube(:,:,i) = circshift(mask .* coded(:,:,i),[0 i-1]);
+end
+y = sum(skewed_cube, 3);
+figure;imagesc(y)
+
+weig = y;
+for i = 1:480
+for j = 1:640 
+    if (y(i,j) ~=0 )
+        weig(i,j )= 1/y(i,j);
+    end
+end
+end
+figure;imagesc(weig)
+figure;imshow(weig)
+
+
 
 %%cassiForwardCodedAperture
 for i = 1:8

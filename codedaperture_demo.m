@@ -1,9 +1,9 @@
 % This demo shows the reconstruction of a 3D datacube by solving a LASSO
 % problem in DWT/DCT domain 
 
-close all
-clear
-clc
+% close all
+% clear
+
 
 % read the ideal 3D datacube
 f = imread('msDataSet.tif');
@@ -25,9 +25,30 @@ y = inverse_coded_aperture(f);
 
 % from the monochrome image y to reconstructed 3D datacube
 recons_cube = forward_coded_aperture(y);
+% figure;imagesc(f(:,:,1) - recons_cube(:,:,1)); 
+% maxerror = max(max(abs(f(:,:,1) - recons_cube(:,:,1))))
+% sumerror = sum(sum((f(:,:,1) - recons_cube(:,:,1)).^2))
 
-% reconstructed data cube error for debug
-% imagesc(recons_cube(:,:,1)-f(:,:,1).* mask);
+
+% show the reconstructed datacube error for debug
+% y_compared = inverse_coded_aperture(recons_cube);
+% figure;imagesc(y - y_compared); max(max(abs(y - y_compared)))
+
+% for debug 
+% afterDWT = dwt_cassi(f);
+% afterDCT = dct(afterDWT,[],3);
+for i = 1:8
+    for j = 1:8
+        if (i == 1)
+            coeff(i,j) = sqrt(1/8)*cos((i-1)*pi* (2*(j-1)+1)/16 ) ;
+        else 
+            coeff(i,j) = sqrt(2/8)*cos((i-1)*pi* (2*(j-1)+1)/16 ) ;
+        end
+    end    
+end
+
+% end debug
+
 
 figure(1)
 subplot(4,1,2)
@@ -65,6 +86,16 @@ WT = @(x) dct_cassi_handle(dwt_cassi_handle(x));
 A = @(x) inverse_coded_aperture_handle(idwt_cassi_handle(idct_cassi_handle(x)));
 AT = @(x) dct_cassi_handle((dwt_cassi_handle(forward_coded_aperture_handle(x))));
 
+% for debug from y -datacube- x -datacube- y
+ reconst_monochrome = A(AT(y));
+ figure;imagesc(reconst_monochrome)
+ 
+ test = (WT(f));
+ test = W(WT(f));
+ figure;imagesc(test(:,:,1))
+ figure;imagesc(test(:,:,1)-f(:,:,1))
+ 
+
 % grouth truth and initialization for GPSR_BB
 grtruth = dct_cassi_handle((dwt_cassi_handle(f))); 
 Initialization = AT(y);
@@ -79,9 +110,11 @@ title('Initialization','FontName','Times','FontSize',11)
 
 
 % regularization parameter
-tau = 1.35;
+tau = 0.35;
 % set tolA
+% tolA =0.5;
 tolA = 1.e-2;
+
 
 % Now, run the GPSR functions, until they reach the StopCriterion 1 based on the relative
 % variation of the objective function, namely (abs(f-prev_f)/(prev_f)> tolA).
@@ -188,4 +221,8 @@ set(leg,'FontSize',16)
 set(gca,'FontName','Times')
 set(gca,'FontSize',16)
     
+
+figure(4)
+imagesc([f(:,:,1) result(:,:,1)])
+
 
